@@ -20,15 +20,10 @@
  </div>
 
  <div class="form-group">
-   <label>Criterio</label>
-   <input type="text" ng-model="criteria" placeholder="Criteria" class="form-control">
-
- </div>
- <div class="form-group">
    <label>Busqueda</label>
    <input type="text" ng-model="asyncSelected" placeholder="Locations loaded via $http"
-      typeahead='item as item.NOMBRE for item in search(criteria,$viewValue)'
-      typeahead-loading="loadingLocations" class="form-control">
+      typeahead='item for item in search($viewValue)'
+      typeahead-loading="loadingLocations" typeahead-template-url="template.html" class="form-control">
    <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
 
  </div>

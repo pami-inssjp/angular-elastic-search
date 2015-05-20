@@ -51,7 +51,7 @@ function ElasticSearch($http,elasticUrl){
 
     this.url = elasticUrl;
 
-    this.buildQuery = function(index,criteria,query){
+    this.buildQuery = function(index){
 
       return this.url+"/"+index+"/_search";
 
@@ -64,7 +64,7 @@ function ElasticSearch($http,elasticUrl){
     };
 
     this.search  = function(index,criteria,query){
-      var q = this.buildQuery(index,criteria,query);
+      var q = this.buildQuery(index);
       var params = this.buildParams(criteria,query);
       return $http.get(q,{params:params}).then(function(response){
         return response.data;
@@ -80,6 +80,29 @@ function ElasticSearch($http,elasticUrl){
     this.sources  = function(index,criteria,query){
       return this.hits(index,criteria,query).then(function(response){
         return response.hits.map(function(elem){
+          return elem._source;
+        });
+      });
+    };
+
+    this.fuzzy  = function(index,fields,query){
+      var q = this.buildQuery(index);
+
+      var body = {
+        query: {
+        fuzzy_like_this : {
+          fields : fields,
+          like_text : query,
+          max_query_terms : 12
+          }
+        }
+      };
+
+
+      return $http.post(q,body).then(function(response){
+        var data = response.data;
+        console.log(data);
+        return data.hits.hits.map(function(elem){
           return elem._source;
         });
       });
