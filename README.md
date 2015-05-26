@@ -31,21 +31,47 @@ Primero debemos agregar la dependencia de bower
 `bower install --save git@github.com:pami-inssjp/angular-elastic-search.git#v1.0.0`
 
 ```javascript
+
+//Importo el modulo de elastic ("elastic.search")
 var module = angular.module('module',["elastic.search"]);
 
 
 module.config(['$elasticsearchProvider',function($elasticsearchProvider){
 
-  $elasticsearchProvider.setUrl("http://localhost:9200");
+
+  // Primero configuro el estastic search
+
+  // Le paso URL del elastic
+  // La cantidad de resultados por busqueda
+  // La clase CSS para el highlight
+
+  $elasticsearchProvider.setConfig({
+    url:"http://localhost:9200",
+    size:20,
+    cssClass:"bold"
+  });
 
 }]);
+
+
+// Inyectamos al controller el service de elastic ($elasticsearch)
 
 module.controller('ExampleController',["$scope","$elasticsearch",function($scope,$elasticsearch){
 
   $scope.search = function(value){
-    console.log(value);
-    return $elasticsearch.sources("index","key",value).then(function(response){
-      console.log(response);
+
+    // Defino los campos por los cuales voy a hacer una busqueda fuzzy
+    var fields = ["nombre","apellido"];
+
+    // LLamo al elastic y le envio:
+    // El index sobre el cual quiero hacer la query
+    // Los campos sobre los que se buscan
+    // El valor de busqueda
+    // Si la respuesta va a tener hightlight o no
+    return $elasticsearch.fuzzy("pacientes",fields,value,true).then(function(response){
+
+      //La respuesta devuelve el objeto correspondiente
+
       return response;
     });
   };
@@ -53,6 +79,8 @@ module.controller('ExampleController',["$scope","$elasticsearch",function($scope
 }]);
 
 ```
+
+
 
 ## License
 
