@@ -32,14 +32,19 @@ var module = angular.module("elastic.search",[]);
 module.provider('$elasticsearch',function(){
 
   var url = "";
+  var size = 10;
   self = this;
 
   this.setUrl = function(elasticUrl){
     self.url = elasticUrl;
   };
 
+  this.setSize = function(size){
+    self.size = size;
+  };
+
   this.$get = ["$http",function($http){
-    return new ElasticSearch($http,self.url);
+    return new ElasticSearch($http,self.url,self.size);
   }];
 
 });
@@ -47,7 +52,7 @@ module.provider('$elasticsearch',function(){
 
 
 
-function ElasticSearch($http,elasticUrl){
+function ElasticSearch($http,elasticUrl,size){
 
     this.url = elasticUrl;
 
@@ -88,18 +93,22 @@ function ElasticSearch($http,elasticUrl){
     this.fuzzy  = function(index,fields,query){
       var q = this.buildQuery(index);
 
+
+      var params = {
+        size: size
+      };
+
       var body = {
         query: {
         fuzzy_like_this : {
           fields : fields,
-          like_text : query,
-          max_query_terms : 12
+          like_text : query
           }
         }
       };
 
 
-      return $http.post(q,body).then(function(response){
+      return $http.post(q,body,{params:params}).then(function(response){
         var data = response.data;
         console.log(data);
         return data.hits.hits.map(function(elem){
