@@ -5,7 +5,11 @@ module.config(['$elasticsearchProvider',function($elasticsearchProvider){
 
   //$elasticsearchProvider.setUrl("http://10.0.205.248:9200");
   //$elasticsearchProvider.setUrl("http://dev-asthenis-es01:9200");
-  $elasticsearchProvider.setUrl("http://localhost:9200");
+  $elasticsearchProvider.setConfig({
+    url:"http://localhost:9200",
+    size:20,
+    cssClass:"bold"
+  });
 
 }]);
 
@@ -13,24 +17,14 @@ module.config(['$elasticsearchProvider',function($elasticsearchProvider){
 module.controller('ExampleController',["$scope","$elasticsearch",function($scope,$elasticsearch){
 
   $scope.init = function(){
-    console.log("init");
-    console.log($elasticsearch);
   }
 
   $scope.search = function(value){
-    console.log(value);
-    var fields = ["nombre"];
-    return $elasticsearch.fuzzy("pacientes",fields,value).then(function(response){
-      console.log(response);
+    var fields = ["nombre","apellido"];
+    return $elasticsearch.fuzzy("pacientes",fields,value,true).then(function(response){
       return response;
     });
   };
-
-
-
-
-
-
 
 
 }]);

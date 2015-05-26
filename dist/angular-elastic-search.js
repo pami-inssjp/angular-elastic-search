@@ -31,20 +31,21 @@ var module = angular.module("elastic.search",[]);
 
 module.provider('$elasticsearch',function(){
 
-  var url = "";
-  var size = 10;
   self = this;
 
-  this.setUrl = function(elasticUrl){
-    self.url = elasticUrl;
+  var config = {
+    url:"",
+    size:10,
+    cssClass :""
   };
 
-  this.setSize = function(size){
-    self.size = size;
+  this.setConfig = function(config){
+    self.config = config;
   };
+
 
   this.$get = ["$http",function($http){
-    return new ElasticSearch($http,self.url,self.size);
+    return new ElasticSearch($http,self.config);
   }];
 
 });
@@ -52,9 +53,10 @@ module.provider('$elasticsearch',function(){
 
 
 
-function ElasticSearch($http,elasticUrl,size){
+function ElasticSearch($http,config){
 
-    this.url = elasticUrl;
+    self = this;
+    this.url = config.url;
 
     this.buildQuery = function(index){
 
@@ -62,59 +64,91 @@ function ElasticSearch($http,elasticUrl,size){
 
     };
 
-    this.buildParams = function(criteria,query){
-      return {
-        q:criteria+":"+query
-      };
-    };
-
-    this.search  = function(index,criteria,query){
+    this.search = function(index,fields,query,transformation){
       var q = this.buildQuery(index);
-      var params = this.buildParams(criteria,query);
-      return $http.get(q,{params:params}).then(function(response){
-        return response.data;
-      });
-    };
-
-    this.hits  = function(index,criteria,query){
-      return this.search(index,criteria,query).then(function(response){
-        return response.hits;
-      });
-    };
-
-    this.sources  = function(index,criteria,query){
-      return this.hits(index,criteria,query).then(function(response){
-        return response.hits.map(function(elem){
-          return elem._source;
-        });
-      });
-    };
-
-    this.fuzzy  = function(index,fields,query){
-      var q = this.buildQuery(index);
-
 
       var params = {
-        size: size
+        size: config.size
       };
 
-      var body = {
-        query: {
-        fuzzy_like_this : {
-          fields : fields,
-          like_text : query
-          }
-        }
-      };
-
+      var fieldsToHigh = this.fieldsToHighlight(fields);
+      var body = self.createBody(fields,query,fieldsToHigh,config.cssClass);
 
       return $http.post(q,body,{params:params}).then(function(response){
         var data = response.data;
-        console.log(data);
-        return data.hits.hits.map(function(elem){
-          return elem._source;
-        });
+        return data.hits.hits.map(transformation);
       });
+
+    };
+
+
+    this.createBody = function(fields,query,fieldsToHigh,cssClass){
+      return {
+        query: {
+          fuzzy_like_this : {
+            fields : fields,
+            like_text : query
+          }
+          },
+          highlight : {
+              pre_tags : ['<span class=\"'+cssClass+'\">'],
+              post_tags : ["</span>"],
+              fields : fieldsToHigh
+          }
+
+      };
+    };
+
+
+      this.fieldsToHighlight = function(fields){
+            var response = {};
+            fields.forEach(function(field){
+              response[field] = {force_source : true};
+            });
+        return response;
+      };
+
+    this.fuzzyWithHighlights = function(index,fields,query){
+
+      return this.search(index,fields,query,function(elem){
+
+        var item = elem._source;
+        var highlights = elem.highlight;
+
+        fields.forEach(function(field){
+
+          var fieldName = self.generateHighlightedFieldName(field);
+          var highlightedField = highlights[field];
+          if(highlightedField !== undefined){
+            // Si esta existe el campo en highlight entonces
+            // reemplazo el valor original por el highlight;
+            item[fieldName] = highlightedField[0];
+          }else{
+            // En caso contrario escribo el campo pero uso el valor original
+            item[fieldName] = item[field];
+          }
+        });
+        return item;
+      });
+    };
+
+    this.generateHighlightedFieldName = function(field){
+      return field+"_highlighted";
+    };
+
+    this.fuzzyWithoutHighlights = function(index,fields,query){
+      return this.search(index,fields,query,function(elem){
+        return elem._source;
+      });
+    };
+
+
+    this.fuzzy  = function(index,fields,query,highlight){
+      if(highlight === true){
+        return this.fuzzyWithHighlights(index,fields,query);
+      }else{
+        return this.fuzzyWithoutHighlights(index,fields,query);
+      }
     };
 
 }
