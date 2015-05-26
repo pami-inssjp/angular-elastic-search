@@ -10,7 +10,7 @@ Esta lib contiene un provider para AngularJS, que nos permite configurar un enpo
 * NPM
 * Grunt
 * Bower
- 
+
 ### Comandos
 
 Resolver las dependencias de NPM:
@@ -25,6 +25,10 @@ Ejecutar los comandos para construir DIST:
 En la carpeta `/dist` se encuenta los archivos minificados finales.
 
 ## Modo de uso
+
+Primero debemos agregar la dependencia de bower
+
+`bower install --save git@github.com:pami-inssjp/angular-elastic-search.git#v1.0.0`
 
 ```javascript
 var module = angular.module('module',["elastic.search"]);
