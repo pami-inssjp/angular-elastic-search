@@ -62,34 +62,6 @@ function ElasticSearch($http,elasticUrl,size){
 
     };
 
-    this.buildParams = function(criteria,query){
-      return {
-        q:criteria+":"+query
-      };
-    };
-
-    this.search  = function(index,criteria,query){
-      var q = this.buildQuery(index);
-      var params = this.buildParams(criteria,query);
-      return $http.get(q,{params:params}).then(function(response){
-        return response.data;
-      });
-    };
-
-    this.hits  = function(index,criteria,query){
-      return this.search(index,criteria,query).then(function(response){
-        return response.hits;
-      });
-    };
-
-    this.sources  = function(index,criteria,query){
-      return this.hits(index,criteria,query).then(function(response){
-        return response.hits.map(function(elem){
-          return elem._source;
-        });
-      });
-    };
-
     this.fuzzy  = function(index,fields,query){
       var q = this.buildQuery(index);
 
