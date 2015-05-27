@@ -26,16 +26,23 @@ En la carpeta `/dist` se encuenta los archivos minificados finales.
 
 ## Modo de uso
 
+### Consideraciones
+
+Este componente de AngularJS no es una _directive_, sino que es un _service_. Abstrae la llamada por REST a un Elastic Search, cuya ruta se configura en un _provider_. Es compatible con **Angular BootstrapUI**. Para un mejor ejemplo revisar la carpeta `examples` donde se podrá encontrar una pequeña app AngularJS con el **angular-elastic-search** y `typeahead` de **Angular BootstrapUI**
+
+### Pasos a seguir
+
 * Primero debemos agregar la dependencia de bower
 
-`bower install --save git@github.com:pami-inssjp/angular-elastic-search.git#v1.0.0`
+` bower install --save 'git@github.com:pami-inssjp/angular-elastic-search#v1.0.0'`
 
 * Luego tenemos que importar en nuestro `index.html` el servicio.
 
 ```javascript
-<script src="bower_components/elastic-directive/angular-elastic-search.min.js" charset="utf-8"></script>
+<script src="bower_components/angular-elastic-search/dist/angular-elastic-search.min.js" charset="utf-8"></script>
 ```
 
+* En el módulo principal de nuestra aplicación angular agregamos la dependencia al modulo del servicio, lo inyectamos en la configuración y allí mismo le pasamos los parámetros que va a utlizar.
 
 ```javascript
 
@@ -61,7 +68,11 @@ module.config(['$elasticsearchProvider',function($elasticsearchProvider){
   });
 
 }]);
+```
+* Luego en el controller que vamos a utilizar lo inyectamos, y ejecutamos la funcion de _fuzzy search_.
 
+
+```javascript
 
 // Inyectar al controller el service de elastic ($elasticsearch)
 
@@ -88,8 +99,6 @@ module.controller('ExampleController',["$scope","$elasticsearch",function($scope
 }]);
 
 ```
-
-
 
 ## License
 
