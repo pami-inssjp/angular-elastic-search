@@ -21,7 +21,7 @@ module.controller('ExampleController',["$scope","$elasticsearch",function($scope
 
   $scope.search = function(value){
     var fields = ["nombre","apellido"];
-    return $elasticsearch.fuzzy("pacientes",fields,value,true).then(function(response){
+    return $elasticsearch.fuzzy("pacientes",fields,value,false).then(function(response){
       return response;
     });
   };
