@@ -88,7 +88,7 @@ module.controller('ExampleController',["$scope","$elasticsearch",function($scope
     // Los campos sobre los que se buscan
     // El valor de busqueda
     // Si la respuesta va a tener hightlight o no
-    return $elasticsearch.fuzzy("pacientes",fields,value,true).then(function(response){
+    return $elasticsearch.fuzzy("indice",fields,value,true).then(function(response){
 
       //La respuesta devuelve el objeto correspondiente
 
@@ -99,6 +99,23 @@ module.controller('ExampleController',["$scope","$elasticsearch",function($scope
 }]);
 
 ```
+
+## Manejo de Errores
+
+`$elasticsearch.fuzzy(...)` devuelve una `$promise` de `$http`. En caso de ser satisfactoria la respuesta devuelve una lista de los objetos buscados. Pero en caso de haberse producido un error devuelve el response `$http`. Para poder manejar la respuesta en caso de error hay que enviarle dos parametros a la funcion `.then()`, las cuales deberán ser dos funciones que reciben como único parámetro el _response_. Por ejemplo:
+
+```javascript
+$elasticsearch.fuzzy("indice",fields,value,true)
+  .then(
+    function(okResponse){
+      //Manejo la respuesta satisfactoria
+    },
+    function(errorResponse){
+      //Manejo el error
+    });
+```
+
+Observen que el then recibe dos parametros: una funcion para el caso correcto y otra para el error. Allí dentro deberán manejar el error y hacer con la respuesta lo que crean correcto.
 
 ## License
 
