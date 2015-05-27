@@ -1,6 +1,6 @@
-# Angular Elastic Search
+# Angular Elasticsearch
 
-Esta lib contiene un provider para AngularJS, que nos permite configurar un enpoint de elastic search para poder utilizarlo como servicio.
+Esta lib contiene un provider para AngularJS que nos permite configurar un endpoint de Elasticsearch para poder utilizarlo como servicio.
 
 
 ## Build
@@ -22,13 +22,13 @@ Resolver las dependencias de Bower:
 Ejecutar los comandos para construir DIST:
 `grunt`
 
-En la carpeta `/dist` se encuenta los archivos minificados finales.
+En la carpeta `/dist` se encuentra los archivos minificados finales.
 
 ## Modo de uso
 
 ### Consideraciones
 
-Este componente de AngularJS no es una _directive_, sino que es un _service_. Abstrae la llamada por REST a un Elastic Search, cuya ruta se configura en un _provider_. Es compatible con **Angular BootstrapUI**. Para un mejor ejemplo revisar la carpeta `examples` donde se podrá encontrar una pequeña app AngularJS con el **angular-elastic-search** y `typeahead` de **Angular BootstrapUI**
+Este componente de AngularJS no es una _directive_, sino que es un _service_. Abstrae la llamada por REST a un Elasticsearch, cuya ruta se configura en un _provider_. Es compatible con **Angular BootstrapUI**. Para un mejor ejemplo revisar la carpeta `examples` donde se podrá encontrar una pequeña app AngularJS con el **angular-elastic-search** y `typeahead` de **Angular BootstrapUI**
 
 ### Pasos a seguir
 
@@ -42,7 +42,7 @@ Este componente de AngularJS no es una _directive_, sino que es un _service_. Ab
 <script src="bower_components/angular-elastic-search/dist/angular-elastic-search.min.js" charset="utf-8"></script>
 ```
 
-* En el módulo principal de nuestra aplicación angular agregamos la dependencia al modulo del servicio, lo inyectamos en la configuración y allí mismo le pasamos los parámetros que va a utlizar.
+* En el módulo principal de nuestra aplicación angular agregamos la dependencia al módulo del servicio, lo inyectamos en la configuración y allí mismo le pasamos los parámetros que va a utlizar.
 
 ```javascript
 
@@ -50,15 +50,15 @@ Este componente de AngularJS no es una _directive_, sino que es un _service_. Ab
 var module = angular.module('module',["elastic.search"]);
 
 
-// Inyectar esl $elasticsearchProvider para poder configurar el
+// Inyectar el $elasticsearchProvider para poder configurar el
 // servicio
 module.config(['$elasticsearchProvider',function($elasticsearchProvider){
 
 
-  // Primero configuro el estastic search
+  // Primero configuro el elasticsearch
 
   // Le paso URL del elastic
-  // La cantidad de resultados por busqueda
+  // La cantidad de resultados por búsqueda
   // La clase CSS para el highlight
 
   $elasticsearchProvider.setConfig({
@@ -69,7 +69,7 @@ module.config(['$elasticsearchProvider',function($elasticsearchProvider){
 
 }]);
 ```
-* Luego en el controller que vamos a utilizar lo inyectamos, y ejecutamos la funcion de _fuzzy search_.
+* Luego en el controller que vamos a utilizar lo inyectamos, y ejecutamos la función de _fuzzy search_.
 
 
 ```javascript
@@ -83,7 +83,7 @@ module.controller('ExampleController',["$scope","$elasticsearch",function($scope
     // Defino los campos por los cuales voy a hacer una busqueda fuzzy
     var fields = ["nombre","apellido"];
 
-    // LLamo al elastic y le envio:
+    // LLamo al elastic y le envío:
     // El index sobre el cual quiero hacer la query
     // Los campos sobre los que se buscan
     // El valor de busqueda
@@ -102,7 +102,7 @@ module.controller('ExampleController',["$scope","$elasticsearch",function($scope
 
 ## Manejo de Errores
 
-`$elasticsearch.fuzzy(...)` devuelve una `$promise` de `$http`. En caso de ser satisfactoria la respuesta devuelve una lista de los objetos buscados. Pero en caso de haberse producido un error devuelve el response `$http`. Para poder manejar la respuesta en caso de error hay que enviarle dos parametros a la funcion `.then()`, las cuales deberán ser dos funciones que reciben como único parámetro el _response_. Por ejemplo:
+`$elasticsearch.fuzzy(...)` devuelve una `$promise` de `$http`. En caso de ser satisfactoria la respuesta devuelve una lista de los objetos buscados. Pero en caso de haberse producido un error devuelve el response `$http`. Para poder manejar la respuesta en caso de error hay que enviarle dos parámetros a la función `.then()`, las cuales deberán ser dos funciones que reciben como único parámetro el _response_. Por ejemplo:
 
 ```javascript
 $elasticsearch.fuzzy("indice",fields,value,true)
@@ -115,7 +115,7 @@ $elasticsearch.fuzzy("indice",fields,value,true)
     });
 ```
 
-Observen que el then recibe dos parametros: una funcion para el caso correcto y otra para el error. Allí dentro deberán manejar el error y hacer con la respuesta lo que crean correcto.
+Observen que el then recibe dos parámetros: una función para el caso correcto y otra para el error. Allí dentro deberán manejar el error y hacer con la respuesta lo que crean correcto.
 
 ## License
 
