@@ -134,7 +134,7 @@ function ElasticSearch($http,config){
       });
     };
 
-    this.generateHighlightedFieldName = function(field)
+    this.generateHighlightedFieldName = function(field){
        return field+"_highlighted";
     };
 

@@ -26,16 +26,25 @@ En la carpeta `/dist` se encuenta los archivos minificados finales.
 
 ## Modo de uso
 
-Primero debemos agregar la dependencia de bower
+* Primero debemos agregar la dependencia de bower
 
 `bower install --save git@github.com:pami-inssjp/angular-elastic-search.git#v1.0.0`
 
+* Luego tenemos que importar en nuestro `index.html` el servicio.
+
+```javascript
+<script src="bower_components/elastic-directive/angular-elastic-search.min.js" charset="utf-8"></script>
+```
+
+
 ```javascript
 
-//Importo el modulo de elastic ("elastic.search")
+// Importar el modulo de elastic ("elastic.search")
 var module = angular.module('module',["elastic.search"]);
 
 
+// Inyectar esl $elasticsearchProvider para poder configurar el
+// servicio
 module.config(['$elasticsearchProvider',function($elasticsearchProvider){
 
 
@@ -54,7 +63,7 @@ module.config(['$elasticsearchProvider',function($elasticsearchProvider){
 }]);
 
 
-// Inyectamos al controller el service de elastic ($elasticsearch)
+// Inyectar al controller el service de elastic ($elasticsearch)
 
 module.controller('ExampleController',["$scope","$elasticsearch",function($scope,$elasticsearch){
 

@@ -34,7 +34,7 @@ module.provider('$elasticsearch',function(){
   self = this;
 
   var config = {
-    url:"",
+    url:"http://localhost:9200",
     size:10,
     cssClass :""
   };
@@ -119,6 +119,7 @@ function ElasticSearch($http,config){
 
           var fieldName = self.generateHighlightedFieldName(field);
           var highlightedField = highlights[field];
+
           if(highlightedField !== undefined){
             // Si esta existe el campo en highlight entonces
             // reemplazo el valor original por el highlight;
@@ -127,13 +128,14 @@ function ElasticSearch($http,config){
             // En caso contrario escribo el campo pero uso el valor original
             item[fieldName] = item[field];
           }
+
         });
         return item;
       });
     };
 
     this.generateHighlightedFieldName = function(field){
-      return field+"_highlighted";
+       return field+"_highlighted";
     };
 
     this.fuzzyWithoutHighlights = function(index,fields,query){
