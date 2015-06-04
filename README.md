@@ -42,6 +42,14 @@ Este componente de AngularJS no es una _directive_, sino que es un _service_. Ab
 <script src="bower_components/angular-elastic-search/dist/angular-elastic-search.min.js" charset="utf-8"></script>
 ```
 
+* Crear la clase CSS para realizar el highlight del texto encontrado e importarlo dentro del `index.html`
+
+```css
+.bold{
+  font-weight: bold;
+}
+```
+
 * En el módulo principal de nuestra aplicación angular agregamos la dependencia al módulo del servicio, lo inyectamos en la configuración y allí mismo le pasamos los parámetros que va a utlizar.
 
 ```javascript
