@@ -34,7 +34,7 @@ module.provider('$elasticsearch',function(){
   self = this;
 
   var config = {
-    url:"",
+    url:"http://localhost:9200",
     size:10,
     cssClass :""
   };
@@ -114,31 +114,30 @@ function ElasticSearch($http,config){
 
         var item = elem._source;
         var highlights = elem.highlight;
+        var highlighted = angular.copy(item);
 
         fields.forEach(function(field){
 
-          var fieldName = self.generateHighlightedFieldName(field);
+          var fieldName = field;
           var highlightedField = highlights[field];
+
           if(highlightedField !== undefined){
             // Si esta existe el campo en highlight entonces
             // reemplazo el valor original por el highlight;
-            item[fieldName] = highlightedField[0];
+            highlighted[fieldName] = highlightedField[0];
           }else{
             // En caso contrario escribo el campo pero uso el valor original
             item[fieldName] = item[field];
           }
-        });
-        return item;
-      });
-    };
 
-    this.generateHighlightedFieldName = function(field){
-      return field+"_highlighted";
+        });
+        return {original:item,highlighted:highlighted};
+      });
     };
 
     this.fuzzyWithoutHighlights = function(index,fields,query){
       return this.search(index,fields,query,function(elem){
-        return elem._source;
+        return {original:elem._source,highlighted:{}};
       });
     };
 
